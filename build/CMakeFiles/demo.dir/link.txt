@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/demo.dir/demo/main.cpp.o -o demo  libBREEZE.a -lSDL2 -lSDL2_image /usr/lib/x86_64-linux-gnu/libGLX.so /usr/lib/x86_64-linux-gnu/libOpenGL.so -lGLEW -lassimp 

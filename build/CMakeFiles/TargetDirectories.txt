@@ -1,0 +1,6 @@
+/home/augusto/Documents/BREEZE/build/CMakeFiles/BREEZE.dir
+/home/augusto/Documents/BREEZE/build/CMakeFiles/demo.dir
+/home/augusto/Documents/BREEZE/build/CMakeFiles/copy_assets.dir
+/home/augusto/Documents/BREEZE/build/CMakeFiles/copy_shaders.dir
+/home/augusto/Documents/BREEZE/build/CMakeFiles/edit_cache.dir
+/home/augusto/Documents/BREEZE/build/CMakeFiles/rebuild_cache.dir

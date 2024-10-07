@@ -1,0 +1,2 @@
+/usr/bin/ar qc libBREEZE.a CMakeFiles/BREEZE.dir/src/mesh.cpp.o CMakeFiles/BREEZE.dir/src/model.cpp.o CMakeFiles/BREEZE.dir/src/shader.cpp.o CMakeFiles/BREEZE.dir/src/shader_program.cpp.o CMakeFiles/BREEZE.dir/src/stb_image.cpp.o CMakeFiles/BREEZE.dir/src/texture.cpp.o
+/usr/bin/ranlib libBREEZE.a
