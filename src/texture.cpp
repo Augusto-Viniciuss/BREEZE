@@ -7,10 +7,11 @@
 
 namespace BREEZE
 {
+// Construtor da classe Texture
 Texture::Texture(const char* filename) {
   load(filename);
 }
-
+// Função para carregar a textura a partir de um arquivo de imagem
 bool Texture::load(const char* filename) {
   glGenTextures(1, &this->texture_id);
   glBindTexture(GL_TEXTURE_2D, this->texture_id);
@@ -33,15 +34,15 @@ bool Texture::load(const char* filename) {
   stbi_image_free(data);
   return true;
 }
-
+// Função para ativar a textura e torná-la utilizável no pipeline de OpenGL
 void Texture::use() {
   glBindTexture(GL_TEXTURE_2D, this->texture_id);
 }
-
+// Função que retorna o ID da textura
 uint32_t Texture::get_id() const {
   return this->texture_id;
 }
-
+// Destrutor da classe Texture
 Texture::~Texture() {
   GLuint textures_to_delete[] = {this->texture_id};
   glDeleteTextures(1, textures_to_delete);
