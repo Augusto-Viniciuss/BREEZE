@@ -70,12 +70,12 @@ void main() {
     vec3 diffuse = diffuse_str * light_str * tex_color;
 
     // Cálculo da componente especular (brilho) usando o ângulo entre o observador e o reflexo
-    float specular_value = pow(max(dot(view_direction, reflect_direction), 0.0), 32);  // Brilho especular (expoente = 32)
-    vec3 specular = specular_str * specular_value * vec3(1.0, 1.0, 1.0);  // Cor branca para a luz especular
+    float specular_value = pow(max(dot(view_direction, reflect_direction), 0.0), 32);  
+    vec3 specular = specular_str * specular_value * vec3(1.0, 1.0, 1.0);  
 
     // Calcula a sombra usando o shadow map
     float shadow = get_shadow(frag_position_light_space);
 
     // Cor final do fragmento: soma luz ambiente, difusa e especular, reduzindo o efeito da luz difusa/especular nas áreas sombreadas
-    FragColor = vec4(ambient + (1.0 - shadow) * (diffuse + specular), 1.0);  // Cor RGBA final com alpha = 1 (opaco)
+    FragColor = vec4(ambient + (1.0 - shadow) * (diffuse + specular), 1.0); 
 }
