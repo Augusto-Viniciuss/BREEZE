@@ -8,7 +8,7 @@
 
 namespace BREEZE
 {
-
+// Inicializa buffers e configura os atributos dos vértices.
 Mesh::Mesh(const std::vector<vertex_t>& vertices, const std::vector<uint32_t>& indices, const std::vector<Texture*>& textures)
     : vertices(vertices), indices(indices), textures(textures) {
   glGenBuffers(1, &VBO);
@@ -34,7 +34,7 @@ Mesh::Mesh(const std::vector<vertex_t>& vertices, const std::vector<uint32_t>& i
 
   glBindVertexArray(0);
 }
-
+// Função para renderizar o Mesh
 void Mesh::render(ShaderProgram* shader_program) {
   shader_program->use();
   glActiveTexture(GL_TEXTURE0);
