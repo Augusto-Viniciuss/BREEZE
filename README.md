@@ -16,9 +16,9 @@ O projeto explora conceitos fundamentais da computação gráfica através da im
 
 ## Setup
 
-Para executar, insira o comando no terminal:
+Para executar, abra o terminar e dentro da pasta `build` deste repositório insira o comando:
 ```shell
-COMANDO
+$make
 ```
 
 ## Clonar 
