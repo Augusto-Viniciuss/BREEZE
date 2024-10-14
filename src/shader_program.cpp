@@ -4,6 +4,7 @@
 
 namespace BREEZE
 {
+  //Recebe dois shaders (vertex e fragment) e os liga em um programa de shader
 ShaderProgram::ShaderProgram(Shader* vShader, Shader* fShader) {
   this->id = glCreateProgram();
   glAttachShader(this->id, vShader->get_shader_id());
@@ -18,15 +19,15 @@ ShaderProgram::ShaderProgram(Shader* vShader, Shader* fShader) {
     std::cerr << "Failed to link shader program: " << std::endl;
   }
 }
-
+// Função que retorna o identificador (ID) do programa de shader
 uint32_t ShaderProgram::get_id() const {
   return this->id;
 }
-
+// Função que ativa o programa de shader (torna-o o shader atual que será usado pela pipeline do OpenGL)
 void ShaderProgram::use() {
   glUseProgram(this->id);
 }
-
+// Destrutor da classe ShaderProgram 
 ShaderProgram::~ShaderProgram() {
   glDeleteProgram(this->id);
 }
