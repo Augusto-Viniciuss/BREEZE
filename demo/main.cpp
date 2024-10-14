@@ -13,6 +13,7 @@
 #include "BREEZE/shader_program.h"
 #include "BREEZE/model.h"
 
+// Estrutura de representação para cada planeta
 struct planet_t
 {
   BREEZE::Model* model;
@@ -21,17 +22,18 @@ struct planet_t
   float          rotate_value = 0;
 };
 
+// Função para rotacionar o planeta em seu próprio eixo
 void planetRotateOwnAxis(BREEZE::Model* model) {
   model->model = glm::rotate(model->model, 0.01f, glm::vec3(0, 1, 0));
 }
-
+// Função para rotacionar o planeta em torno do sol
 void planetRotateSunAxis(BREEZE::Model* model, float rotate_value, float distance_to_sun) {
   model->model[3].x = distance_to_sun * cos(rotate_value);
   model->model[3].z = distance_to_sun * sin(rotate_value);
 }
 
 int main(int argc, char** argv) {
-  // CONFIG AND INIT WINDOW
+  // Configuração da tella inicial
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cerr << "Failed to initialize SDL" << std::endl;
     return -1;
@@ -64,6 +66,7 @@ int main(int argc, char** argv) {
 
   glViewport(0, 0, 1280, 720);
 
+  // Define a posição da câmera
   glm::vec3 camera_position  = glm::vec3(1.0f, 15.0f, 20.0f);
   glm::vec3 camera_target    = glm::vec3(0.0f, 0.0f, 0.0f);
   glm::vec3 camera_direction = glm::normalize(camera_position - camera_target);
@@ -73,18 +76,21 @@ int main(int argc, char** argv) {
 
   glm::vec3 camera_up  = glm::normalize(glm::cross(camera_direction, camera_right));
   float     near_plane = 0.1f, far_plane = 100.f;
-  glm::mat4 proj = glm::perspective(glm::radians(45.f), (float)1280.f / (float)720.f, 0.1f, 100.f);
 
+  // Cria a matriz de projeção
+  glm::mat4 proj = glm::perspective(glm::radians(45.f), (float)1280.f / (float)720.f, 0.1f, 100.f);
+  // Cria a matriz de visualização
   glm::mat4 view = glm::mat4(1.0f);
   view           = glm::lookAt(camera_position, camera_target, camera_up);
 
+   // Define a posição da luz
   glm::vec3 light_pos        = glm::vec3(0.0, 0.0, 0.0);
   glm::mat4 light_projection = glm::ortho(-10.f, 10.f, -10.f, 10.f, near_plane, far_plane);
   glm::mat4 light_view       = glm::lookAt(light_pos, glm::vec3(0.f, 0.0f, 0.f), glm::vec3(0.0f, 1.0f, 0.0f));
 
   glm::mat4 light_space_matrix = light_projection * light_view;
 
-  // LOAD AND COMPILE SHADERS
+  // Carrega e compila shaders
   BREEZE::Shader* v_passthrough = new BREEZE::Shader("./shaders/passthrough.vs", BREEZE::shader_type::vertex);
   BREEZE::Shader* f_passthrough = new BREEZE::Shader("./shaders/passthrough.fs", BREEZE::shader_type::fragment);
   BREEZE::Shader* f_phong       = new BREEZE::Shader("./shaders/phong.fs", BREEZE::shader_type::fragment);
@@ -112,7 +118,7 @@ int main(int argc, char** argv) {
   delete v_shadow;
   delete f_shadow;
 
-  // LOAD MODELS AND ADJUST INITIAL STATE
+  // Carrega os modelos e define estados iniciais
   BREEZE::Texture sun_texture_diffuse("./assets/models/sun/13913_Sun_diff.jpg");
   BREEZE::Model*  sun_model = new BREEZE::Model("./assets/models/sun/sun.obj", &sun_texture_diffuse, nullptr);
   glm::vec3       sun_pos   = glm::vec3(0.0, 0.0, 0.0);
@@ -223,11 +229,13 @@ int main(int argc, char** argv) {
 
   std::vector<planet_t> planets = {sun, venus, mercury, earth, mars, jupiter, saturn, uranus, neptune};
 
+  // Variáveis de controle do estado do programa
   bool is_running     = true;
   bool wireframe_mode = false;
   bool cull_faces     = true;
   bool animation_mode = true;
 
+  // Configurações iniciais da janela
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glEnable(GL_BLEND);
   glEnable(GL_DEPTH_TEST);
@@ -236,6 +244,7 @@ int main(int argc, char** argv) {
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+  // Criação do framebuffer para o mapa de sombras
   glActiveTexture(GL_TEXTURE1);
   uint32_t depth_map_fbo;
   glGenFramebuffers(1, &depth_map_fbo);
@@ -252,15 +261,18 @@ int main(int argc, char** argv) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
   glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
 
+  // Configurações do framebuffer
   glBindFramebuffer(GL_FRAMEBUFFER, depth_map_fbo);
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_map, 0);
   glDrawBuffer(GL_NONE);
   glReadBuffer(GL_NONE);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+  // Inicialização dos ângulos da câmera
   float camera_theta = 0;
   float camera_phi   = 0;
 
+  // Loop principal do programa (altera modo, ajuste de ângulo e mudança na direção da câmera)
   while (is_running) {
     SDL_Event e;
     while (SDL_PollEvent(&e) > 0) {
@@ -310,11 +322,13 @@ int main(int argc, char** argv) {
       SDL_UpdateWindowSurface(window);
     }
 
+    // Define o modo de renderização
     if (wireframe_mode)
       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     else
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+    // Calcula a nova posição da câmera
     glm::mat4 rotation_m = glm::rotate(glm::mat4(1.0f), camera_theta, glm::vec3(0, 1, 0));
     camera_position      = glm::vec3(rotation_m * glm::vec4(camera_position, 1));
     camera_theta         = 0;
@@ -331,6 +345,7 @@ int main(int argc, char** argv) {
     camera_up = glm::normalize(glm::cross(camera_direction, camera_right));
     view      = glm::lookAt(camera_position, camera_target, camera_up);
 
+    // Animação dos planetas
     if (animation_mode) {
       for (auto i = 0; i < planets.size(); i++) {
         planetRotateOwnAxis(planets[i].model);
@@ -350,12 +365,14 @@ int main(int argc, char** argv) {
     glBindFramebuffer(GL_FRAMEBUFFER, depth_map_fbo);
     glClear(GL_DEPTH_BUFFER_BIT);
 
+    // Renderiza os planetas para o mapa de sombras
     for (auto planet : planets) {
       planet.model->render(shadow_shader);
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    // Configura o culling de faces
     if (cull_faces) {
       glEnable(GL_CULL_FACE);
     } else {
@@ -367,6 +384,7 @@ int main(int argc, char** argv) {
 
     glViewport(0, 0, 1280, 720);
 
+    // Loop para renderizar cada planeta na cena
     for (auto planet : planets) {
       BREEZE::ShaderProgram* current_shader = planet.model->getShader();
       current_shader->use();
